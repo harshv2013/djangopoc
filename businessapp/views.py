@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 from rest_framework.views import APIView
 
-from datetime import datetime
+from datetime import date, datetime
 
 
 def index(request):
@@ -14,7 +14,7 @@ def index(request):
 from businessapp.models import Snippet, Location, News, Weather
 from businessapp.serializers import SnippetSerializer, \
     LocationSerializer, NewsSerializer, WeatherSerializer, \
-    NewsWeatherSerializer
+    NewsWeatherSerializer, LocationNewsWeatherSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -232,14 +232,42 @@ class NewsWeatherList(APIView):
     """
     def get(self, request, format=None):
         search_date = request.query_params.get('search_date')
-        date_object = datetime.strptime(search_date, '%m-%d-%Y').date()
+        date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
         context_data = {
             "search_date": date_object
         }
-        print('search_date=================',type(date_object))
+        # print('context_data==========>>>>>',context_data)
+        # print('search_date=================',type(date_object))
         # locations = Location.objects.all()
         locations = Location.objects.filter(name='Noida')
         print('location===================',locations[0].__dict__)
-        serializer = NewsWeatherSerializer(locations, many=True)
+        serializer = NewsWeatherSerializer(locations, context=context_data, many=True)
         print('serializer.data============',serializer.data)
         return Response(serializer.data)
+    
+####################################################################
+
+class NewsWeatherList2(APIView):
+    """
+    List all location, or create a new collection.
+    """
+    def get(self, request, format=None):
+        location_name = request.query_params.get('location_name')
+        search_date = request.query_params.get('search_date')
+        if search_date:
+            date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
+        else:
+            date_object = date.today()
+        # date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
+        context_data = {
+            "search_date": date_object
+        }
+        # print('context_data==========>>>>>',context_data)
+        # print('search_date=================',type(date_object))
+        # locations = Location.objects.all()
+        location = Location.objects.filter(name=location_name).first()
+        # print('location===================',locations[0].__dict__)
+        serializer = LocationNewsWeatherSerializer(location, context=context_data)
+        print('serializer.data============',serializer.data)
+        return Response(serializer.data)
+
