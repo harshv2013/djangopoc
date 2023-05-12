@@ -7,8 +7,18 @@
 * LOCATION="location name" Example: Delhi
 * START_TIME="cron time " Example:  0 12 * * * (cron job time as 12 noon)
 
-* Run this command after any changes in cron job: python manage.py crontab add
+* Run this command after any changes in cron job: 
+```
+python manage.py crontab add
+```
 
-* Run the migrations : python manage.py migrate
 
-* Run the project: python manage.py runserver
+* Run the migrations : 
+```
+python manage.py migrate
+```
+
+* Run the project: 
+```
+python manage.py runserver
+```
