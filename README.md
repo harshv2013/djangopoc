@@ -28,7 +28,7 @@ python manage.py runserver
 curl --location --request POST 'http://localhost:8000/businessapp/locations/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "name": "Delhi2"
+    "name": "Delhi"
 }'
 
 ```
