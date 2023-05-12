@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from rest_framework.views import APIView
+from rest_framework.renderers import TemplateHTMLRenderer
 
 from datetime import date, datetime
 from businessapp.models import Location, News, Weather
@@ -172,7 +173,11 @@ class NewsWeatherList(APIView):
 class NewsWeatherList2(APIView):
     """
     List all news weather.
-    """
+    # # """
+    # renderer_classes = [TemplateHTMLRenderer]
+    # template_name = 'index.html'
+
+
     def get(self, request, format=None):
         location_name = request.query_params.get('location_name')
         search_date = request.query_params.get('search_date')
@@ -185,5 +190,8 @@ class NewsWeatherList2(APIView):
         }
         location = Location.objects.filter(name=location_name).first()
         serializer = LocationNewsWeatherSerializer(location, context=context_data)
-        return Response(serializer.data)
+        # return Response({'location': serializer.data})
+        return Response(serializer.data) 
+    
+    
 

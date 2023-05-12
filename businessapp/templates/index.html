@@ -1,0 +1,19 @@
+{% load rest_framework %}
+
+<h3>Location - {{ location.name }}</h3>
+
+{% for i in location.weathernews %}
+
+    <div class="row">
+        {{ i.id }}
+    </div>
+	<div class="row">
+		{{ i.news_data }}
+	</div>
+    <div class="row">
+		{{ i.weather_data }}
+	</div>
+ 
+{% endfor %}
+
+
