@@ -5,76 +5,21 @@ from django.http import HttpResponse
 from rest_framework.views import APIView
 
 from datetime import date, datetime
-
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
-
-from businessapp.models import Snippet, Location, News, Weather
-from businessapp.serializers import SnippetSerializer, \
-    LocationSerializer, NewsSerializer, WeatherSerializer, \
+from businessapp.models import Location, News, Weather
+from businessapp.serializers import LocationSerializer, \
+    NewsSerializer, WeatherSerializer, \
     NewsWeatherSerializer, LocationNewsWeatherSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
-
-class SnippetList(APIView):
-    """
-    List all snippets, or create a new snippet.
-    """
-    def get(self, request, format=None):
-        snippets = Snippet.objects.all()
-        serializer = SnippetSerializer(snippets, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = SnippetSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SnippetDetail(APIView):
-    """
-    Retrieve, update or delete a snippet instance.
-    """
-    def get_object(self, pk):
-        try:
-            return Snippet.objects.get(pk=pk)
-        except Snippet.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
     
-
-##########################################################################
 class LocationListCreate(APIView):
     """
     List all location, or create a new collection.
     """
     def get(self, request, format=None):
         locations = Location.objects.all()
-        print('location===================',locations[0].__dict__)
         serializer = LocationSerializer(locations, many=True)
         return Response(serializer.data)
 
@@ -116,20 +61,12 @@ class LocationRetriveUpdateDestroy(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
-##########################################################################
-
-
-##########################################################################
-
-##########################################################################
 class NewsListCreate(APIView):
     """
-    List all location, or create a new collection.
+    List all news, or create new news.
     """
     def get(self, request, format=None):
         locations = News.objects.all()
-        print('location===================',locations[0].__dict__)
         serializer = NewsSerializer(locations, many=True)
         return Response(serializer.data)
 
@@ -143,7 +80,7 @@ class NewsListCreate(APIView):
 
 class NewsRetriveUpdateDestroy(APIView):
     """
-    Retrieve, update or delete a location instance.
+    Retrieve, update or delete a news instance.
     """
     def get_object(self, pk):
         try:
@@ -171,17 +108,12 @@ class NewsRetriveUpdateDestroy(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
-##########################################################################
-
-##########################################################################
 class WeatherListCreate(APIView):
     """
-    List all location, or create a new collection.
+    List all weather, or create a new weather.
     """
     def get(self, request, format=None):
         locations = Weather.objects.all()
-        print('location===================',locations[0].__dict__)
         serializer = WeatherSerializer(locations, many=True)
         return Response(serializer.data)
 
@@ -195,7 +127,7 @@ class WeatherListCreate(APIView):
 
 class WeatherRetriveUpdateDestroy(APIView):
     """
-    Retrieve, update or delete a location instance.
+    Retrieve, update or delete a weather instance.
     """
     def get_object(self, pk):
         try:
@@ -222,13 +154,9 @@ class WeatherRetriveUpdateDestroy(APIView):
         location.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-
-##########################################################################
-
 class NewsWeatherList(APIView):
     """
-    List all location, or create a new collection.
+    List all news weather.
     """
     def get(self, request, format=None):
         search_date = request.query_params.get('search_date')
@@ -236,20 +164,14 @@ class NewsWeatherList(APIView):
         context_data = {
             "search_date": date_object
         }
-        # print('context_data==========>>>>>',context_data)
-        # print('search_date=================',type(date_object))
-        # locations = Location.objects.all()
         locations = Location.objects.filter(name='Noida')
-        print('location===================',locations[0].__dict__)
         serializer = NewsWeatherSerializer(locations, context=context_data, many=True)
-        print('serializer.data============',serializer.data)
         return Response(serializer.data)
     
-####################################################################
 
 class NewsWeatherList2(APIView):
     """
-    List all location, or create a new collection.
+    List all news weather.
     """
     def get(self, request, format=None):
         location_name = request.query_params.get('location_name')
@@ -258,16 +180,10 @@ class NewsWeatherList2(APIView):
             date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
         else:
             date_object = date.today()
-        # date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
         context_data = {
             "search_date": date_object
         }
-        # print('context_data==========>>>>>',context_data)
-        # print('search_date=================',type(date_object))
-        # locations = Location.objects.all()
         location = Location.objects.filter(name=location_name).first()
-        # print('location===================',locations[0].__dict__)
         serializer = LocationNewsWeatherSerializer(location, context=context_data)
-        print('serializer.data============',serializer.data)
         return Response(serializer.data)
 
