@@ -22,3 +22,13 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
+## Note
+* To create the loaction use this curl command : 
+```
+curl --location --request POST 'http://localhost:8000/businessapp/locations/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Delhi2"
+}'
+
+```
