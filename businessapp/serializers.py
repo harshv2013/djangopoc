@@ -6,7 +6,6 @@ from businessapp.models import Location, News, Weather, NewsWeather
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        # fields = '__all__'
         fields = ['id', 'name', 'created_at']
 
 class NewsSerializer(serializers.ModelSerializer):
