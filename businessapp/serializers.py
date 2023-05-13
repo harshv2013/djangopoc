@@ -20,11 +20,12 @@ class WeatherSerializer(serializers.ModelSerializer):
 
 class NewsWeatherSerializer(serializers.ModelSerializer):
     news = serializers.SerializerMethodField()
+    weather = serializers.SerializerMethodField()
 
     class Meta:
         model = Location
-        fields = ('name', 'created_at','news')
-        # fields = ('name', 'created_at')
+        fields = ('name', 'created_at','weather','news')
+        
     
     def get_news(self, obj):
         search_date = self.context.get('search_date')
@@ -32,6 +33,14 @@ class NewsWeatherSerializer(serializers.ModelSerializer):
         if search_date:
             news = news.filter(created_at__date=search_date)
         serializer = NewsSerializer(instance=news, many=True)
+        return serializer.data
+    
+    def get_weather(self, obj):
+        search_date = self.context.get('search_date')
+        weather = Weather.objects.filter(location=obj)
+        if search_date:
+            weather = weather.filter(created_at__date=search_date)
+        serializer = WeatherSerializer(instance=weather.last())
         return serializer.data
 
 class NewsWeatherSerializer2(serializers.ModelSerializer):

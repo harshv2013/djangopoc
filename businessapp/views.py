@@ -158,15 +158,20 @@ class WeatherRetriveUpdateDestroy(APIView):
 class NewsWeatherList(APIView):
     """
     List all news weather.
-    """
+    # """
+
     def get(self, request, format=None):
         search_date = request.query_params.get('search_date')
-        date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
+        if search_date:
+            date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
+        else:
+            date_object = date.today()
         context_data = {
             "search_date": date_object
         }
         locations = Location.objects.filter(name='Noida')
         serializer = NewsWeatherSerializer(locations, context=context_data, many=True)
+
         return Response(serializer.data)
     
 
