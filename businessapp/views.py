@@ -161,6 +161,7 @@ class NewsWeatherList(APIView):
     # """
 
     def get(self, request, format=None):
+        location_name = request.query_params.get('location_name')
         search_date = request.query_params.get('search_date')
         if search_date:
             date_object = datetime.strptime(search_date, '%d-%m-%Y').date()
@@ -169,7 +170,7 @@ class NewsWeatherList(APIView):
         context_data = {
             "search_date": date_object
         }
-        locations = Location.objects.filter(name='Noida')
+        locations = Location.objects.filter(name=location_name)
         serializer = NewsWeatherSerializer(locations, context=context_data, many=True)
 
         return Response(serializer.data)
@@ -178,7 +179,7 @@ class NewsWeatherList(APIView):
 class NewsWeatherList2(APIView):
     """
     List all news weather.
-    # # """
+    # # # """
     # renderer_classes = [TemplateHTMLRenderer]
     # template_name = 'index.html'
 
